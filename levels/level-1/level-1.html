@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Level 1 - LightMaze</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <link rel="stylesheet" href="level-1.css">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kit.fontawesome.com/c6bc84b6f0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="main">  
+        <div class="container"> 
+            <div class="head-container">
+                <h1>Level 1</h1>
+            </div>
+            <div class="maze-container">
+                <canvas id="myCanvas" width="328" height="328"></canvas>
+            </div>  
+            <div class="btn-container">
+                <button id="menu-btn" onclick="location.href='../../index.html'"><i class="fa-solid fa-angle-left"></i> MENU</button>
+                <button id="restart-btn" onclick="location.reload();"><i class="fa-solid fa-arrows-rotate"></i> RESTART</button>
+                <button id="hint-btn" onclick="drawSolution()"><i class="fa-solid fa-lightbulb"></i> HINT</button>
+            </div>
+        </div>    
+    </div>
+    
+    <script>    
+
+        window.addEventListener("keydown", function(e) {
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+                e.preventDefault();
+            }
+        }, false);
+
+        const key = {
+            UP: 38,
+            DOWN: 40,
+            LEFT: 37,
+            RIGHT: 39
+        };
+        const SCALE = 2;
+        const PINK = "#ff00ff";
+        const YELLOW = "#ffff00";
+        
+        let arr = [[74,2],[74,26],[90,26],[90,10],[106,10],[106,42],[90,42],[90,58],[106,58],[106,74],[90,74],[90,106],[122,106],[122,90],[138,90],[138,106],[154,106],[154,122],[138,122],[138,154],[122,154],[122,122],[90,122],[90,138],[74,138],[74,90],[58,90],[58,74],[74,74],[74,58],[42,58],[42,74],[10,74],[10,138],[26,138],[26,106],[58,106],[58,122],[42,122],[42,138],[58,138],[58,154],[90,154],[90,162]];
+
+        document.addEventListener("keydown", drawAction);
+        
+        var square = document.getElementById("myCanvas");
+        var paper = square.getContext("2d");
+        var x = arr[0][0]*SCALE;
+        var y = arr[0][1]*SCALE;
+        var i = 0;
+        var intervalId = undefined;
+
+        drawing_line("#FF6347", x-4, y, x+4, y, paper);
+        drawing_line("#00FF00", 175, 162*SCALE, 184, 162*SCALE, paper);
+        
+        window.addEventListener("load",drawMaze)
+
+        function drawMaze() {
+            var ctx = document.querySelector('#myCanvas').getContext('2d');
+            var img1 = new Image();
+            img1.onload = function() {
+                ctx.drawImage(img1, 0, 0, 164*SCALE, 164*SCALE);
+            }
+            img1.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="164" height="164" version="1.1"><g fill="none" stroke="#FF00FF" stroke-width="2" stroke-linecap="square"><line x1="2" y1="2" x2="66" y2="2" /><line x1="82" y1="2" x2="162" y2="2" /><line x1="18" y1="18" x2="50" y2="18" /><line x1="130" y1="18" x2="146" y2="18" /><line x1="34" y1="34" x2="66" y2="34" /><line x1="82" y1="34" x2="98" y2="34" /><line x1="18" y1="50" x2="82" y2="50" /><line x1="98" y1="50" x2="162" y2="50" /><line x1="2" y1="66" x2="34" y2="66" /><line x1="50" y1="66" x2="66" y2="66" /><line x1="82" y1="66" x2="98" y2="66" /><line x1="130" y1="66" x2="146" y2="66" /><line x1="18" y1="82" x2="50" y2="82" /><line x1="66" y1="82" x2="82" y2="82" /><line x1="98" y1="82" x2="146" y2="82" /><line x1="18" y1="98" x2="66" y2="98" /><line x1="98" y1="98" x2="114" y2="98" /><line x1="34" y1="114" x2="50" y2="114" /><line x1="82" y1="114" x2="146" y2="114" /><line x1="50" y1="130" x2="66" y2="130" /><line x1="146" y1="130" x2="162" y2="130" /><line x1="18" y1="146" x2="50" y2="146" /><line x1="66" y1="146" x2="98" y2="146" /><line x1="2" y1="162" x2="82" y2="162" /><line x1="98" y1="162" x2="162" y2="162" /><line x1="2" y1="2" x2="2" y2="162" /><line x1="18" y1="18" x2="18" y2="50" /><line x1="18" y1="82" x2="18" y2="130" /><line x1="34" y1="50" x2="34" y2="66" /><line x1="34" y1="114" x2="34" y2="146" /><line x1="50" y1="66" x2="50" y2="82" /><line x1="50" y1="146" x2="50" y2="162" /><line x1="66" y1="2" x2="66" y2="34" /><line x1="66" y1="98" x2="66" y2="146" /><line x1="82" y1="2" x2="82" y2="18" /><line x1="82" y1="34" x2="82" y2="130" /><line x1="98" y1="18" x2="98" y2="34" /><line x1="98" y1="82" x2="98" y2="98" /><line x1="98" y1="130" x2="98" y2="162" /><line x1="114" y1="2" x2="114" y2="34" /><line x1="114" y1="50" x2="114" y2="82" /><line x1="114" y1="130" x2="114" y2="162" /><line x1="130" y1="18" x2="130" y2="50" /><line x1="130" y1="98" x2="130" y2="146" /><line x1="146" y1="18" x2="146" y2="34" /><line x1="146" y1="66" x2="146" y2="98" /><line x1="146" y1="130" x2="146" y2="146" /><line x1="162" y1="2" x2="162" y2="162" /></g></svg>');
+        }
+        
+        paper.moveTo(arr[0][0]*SCALE,arr[0][1]*SCALE);
+
+        function drawing_line(color, x_start, y_start, x_end, y_end, board){
+            board.beginPath();
+            board.strokeStyle = color;
+            board.lineWidth = 4*SCALE;
+            board.moveTo(x_start,y_start);
+            board.lineTo(x_end,y_end);
+            board.stroke(); 
+            board.closePath();
+        }
+
+        function drawAction(whenPressKey){
+            var colorLine = YELLOW;
+            var dotMove = 4*SCALE;
+            if(intervalId == undefined){
+                switch(whenPressKey.keyCode){
+                case key.UP:
+                    if(checkCollision(x,y-dotMove)==false){
+                        drawing_line(colorLine, x, y, x, y - dotMove, paper);
+                        y = y - dotMove;
+                        checkWin(x,y);
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'     
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                break;
+
+                case key.DOWN:                   
+                    if(checkCollision(x,y+dotMove)==false){
+                        drawing_line(colorLine, x, y, x, y + dotMove, paper);
+                    y = y + dotMove;
+                    checkWin(x,y);
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'     
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                break;
+
+                case key.LEFT:
+                    if(checkCollision(x-dotMove,y)==false){
+                        drawing_line(colorLine, x, y, x - dotMove, y, paper);
+                        x = x - dotMove;
+                        checkWin(x,y);
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'      
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                break;
+
+                case key.RIGHT:
+                    if(checkCollision(x+dotMove,y)==false){
+                        drawing_line(colorLine, x, y, x + dotMove, y, paper);
+                        x = x + dotMove;
+                        checkWin(x,y);
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'     
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                break;
+                }
+            }
+        }
+
+        function move_to_finish(){
+            x=164;
+            y=324;
+        }
+
+        function checkWin(x,y){
+            if(x > 84*SCALE && x < 92*SCALE && y == 162*SCALE){
+                Swal.fire({
+                    title: 'You WON!',
+                    text: 'Congratulations!',
+                    iconHtml: '<img src="../../images/confetti-img.gif">',
+                    confirmButtonText: 'Next level' 
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.replace("../level-2/level-2.html");
+                    }
+                })
+            }
+        }
+
+        function checkCollision(x,y){
+            var willColide = false;
+            function rgbToHex(r, g, b) {
+                if (r > 255 || g > 255 || b > 255)
+                    throw "Invalid color component";
+                return ((r << 16) | (g << 8) | b).toString(16);
+            }
+            var p = paper.getImageData(x, y, 1, 1).data;
+            var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+            if(hex===PINK){
+                willColide = true;
+            }
+            else if(hex===YELLOW){
+                willColide = true;
+            }
+            return willColide;
+        }
+
+        function drawSolution(){
+            document.getElementById("hint-btn").disabled = true;
+            paper.moveTo(arr[0][0]*SCALE,arr[0][1]*SCALE);
+            intervalId = setInterval(draw, 50);
+            paper.clearRect(0,0,164*SCALE,164*SCALE);
+            drawMaze();
+            function draw(){
+                paper.strokeStyle = "#00FF00";
+                if(i==arr.length){
+                    clearInterval(intervalId);
+                    intervalId = undefined;
+                }
+                else{
+                    var a = arr[i][0]*SCALE;
+                    var b = arr[i][1]*SCALE;
+                    i++; 
+                    paper.lineTo(a,b);
+                    paper.stroke();
+                }
+            }
+            setTimeout(function () { 
+                location.reload();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

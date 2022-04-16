@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mainmenu.css">
+    <meta name="google" content="notranslate">
+    <title>LightMaze - Main Menu</title>
+</head>
+<body>
+    <div id="main-container">
+        <h1>LIGHT MAZE</h1>
+        <div class="navigation-container">
+            <table class="btn-table">
+                <tr>
+                    <td>
+                        <button id="play-btn">PLAY</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="level-btn">LEVELS</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="credits-btn">CREDITS</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        document.getElementById("play-btn").onclick = function () {
+            location.href = "levels/level-1/level-1.html";
+        };
+        document.getElementById("level-btn").onclick = function () {
+            location.href = "html/level-selector.html";
+        };
+
+        document.getElementById("credits-btn").onclick = function () {
+            location.href = "html/credits.html";
+        };
+    </script>
+</body>
+</html>

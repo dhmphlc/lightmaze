@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Level 3 - LightMaze</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <link rel="stylesheet" href="level-3.css">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kit.fontawesome.com/c6bc84b6f0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="main">  
+        <div class="container"> 
+            <div class="head-container">
+                <h1>Level 3</h1>
+            </div>
+            <div class="maze-container">
+                <canvas id="myCanvas" width="644" height="644"></canvas>
+            </div>  
+            <div class="btn-container">
+                <button id="menu-btn" onclick="location.href='../../index.html'"><i class="fa-solid fa-angle-left"></i> MENU</button>
+                <button id="restart-btn" onclick="location.reload();"><i class="fa-solid fa-arrows-rotate"></i> RESTART</button>
+                <button id="hint-btn" onclick="drawSolution()"><i class="fa-solid fa-lightbulb"></i> HINT</button>
+            </div>
+        </div>    
+    </div>
+    
+    <script>  
+
+        window.addEventListener("keydown", function(e) {
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+                e.preventDefault();
+            }
+        }, false);
+
+        const key = {
+            UP: 38,
+            DOWN: 40,
+            LEFT: 37,
+            RIGHT: 39
+        };
+        const SCALE = 1.32;
+        const PINK = "#ff00ff";
+        const YELLOW = "#ffff00";
+        
+        var arr = [[234,2],[234,26],[250,26],[250,42],[218,42],[218,58],[234,58],[234,90],[202,90],[202,138],[218,138],[218,154],[170,154],[170,186],[186,186],[186,170],[202,170],[202,186],[250,186],[250,170],[282,170],[282,202],[266,202],[266,218],[282,218],[282,234],[298,234],[298,250],[314,250],[314,234],[346,234],[346,250],[330,250],[330,298],[314,298],[314,266],[282,266],[282,250],[266,250],[266,266],[234,266],[234,282],[138,282],[138,250],[122,250],[122,186],[106,186],[106,170],[90,170],[90,202],[106,202],[106,234],[90,234],[90,282],[74,282],[74,266],[26,266],[26,282],[42,282],[42,330],[74,330],[74,378],[90,378],[90,394],[74,394],[74,410],[58,410],[58,378],[26,378],[26,426],[10,426],[10,474],[122,474],[122,442],[106,442],[106,426],[122,426],[122,410],[138,410],[138,426],[154,426],[154,442],[138,442],[138,474],[170,474],[170,458],[186,458],[186,442],[202,442],[202,474],[234,474],[234,458],[250,458],[250,482]];
+
+        document.addEventListener("keydown", drawAction);
+        
+        var square = document.getElementById("myCanvas");
+        var paper = square.getContext("2d");
+        var x = arr[0][0]*SCALE;
+        var y = arr[0][1]*SCALE;
+        var i = 0;
+        var intervalId = undefined;
+
+        drawing_line("#FF6347", 306, y, 312, y, paper);
+        drawing_line("#00FF00", 326, 480*SCALE, 332, 480*SCALE, paper);
+        
+        window.addEventListener("load",drawMaze)
+
+        function drawMaze() {
+            var ctx = document.querySelector('#myCanvas').getContext('2d');
+            var img1 = new Image();
+            img1.onload = function() {
+                ctx.drawImage(img1, 0, 0, 484*SCALE, 484*SCALE);
+            }
+            img1.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg width="484" height="484" version="1.1" xmlns="http://www.w3.org/2000/svg"> <g fill="none" stroke="#FF00FF" stroke-width="4" stroke-linecap="square">    <line x1="2" y1="2" x2="226" y2="2" />    <line x1="242" y1="2" x2="482" y2="2" />    <line x1="34" y1="18" x2="66" y2="18" />    <line x1="98" y1="18" x2="114" y2="18" />    <line x1="130" y1="18" x2="146" y2="18" />    <line x1="178" y1="18" x2="210" y2="18" />    <line x1="242" y1="18" x2="274" y2="18" />    <line x1="370" y1="18" x2="450" y2="18" />    <line x1="18" y1="34" x2="130" y2="34" />    <line x1="146" y1="34" x2="194" y2="34" />    <line x1="210" y1="34" x2="242" y2="34" />    <line x1="274" y1="34" x2="290" y2="34" />    <line x1="354" y1="34" x2="386" y2="34" />    <line x1="450" y1="34" x2="466" y2="34" />    <line x1="2" y1="50" x2="34" y2="50" />    <line x1="50" y1="50" x2="130" y2="50" />    <line x1="178" y1="50" x2="210" y2="50" />    <line x1="226" y1="50" x2="258" y2="50" />    <line x1="274" y1="50" x2="290" y2="50" />    <line x1="322" y1="50" x2="338" y2="50" />    <line x1="370" y1="50" x2="402" y2="50" />    <line x1="418" y1="50" x2="434" y2="50" />    <line x1="466" y1="50" x2="482" y2="50" />    <line x1="66" y1="66" x2="82" y2="66" />    <line x1="98" y1="66" x2="130" y2="66" />    <line x1="162" y1="66" x2="178" y2="66" />    <line x1="210" y1="66" x2="226" y2="66" />    <line x1="258" y1="66" x2="370" y2="66" />    <line x1="386" y1="66" x2="434" y2="66" />    <line x1="18" y1="82" x2="34" y2="82" />    <line x1="66" y1="82" x2="98" y2="82" />    <line x1="114" y1="82" x2="178" y2="82" />    <line x1="194" y1="82" x2="226" y2="82" />    <line x1="274" y1="82" x2="290" y2="82" />    <line x1="338" y1="82" x2="402" y2="82" />    <line x1="418" y1="82" x2="466" y2="82" />    <line x1="34" y1="98" x2="50" y2="98" />    <line x1="98" y1="98" x2="146" y2="98" />    <line x1="178" y1="98" x2="194" y2="98" />    <line x1="226" y1="98" x2="258" y2="98" />    <line x1="354" y1="98" x2="386" y2="98" />    <line x1="402" y1="98" x2="418" y2="98" />    <line x1="434" y1="98" x2="450" y2="98" />    <line x1="50" y1="114" x2="66" y2="114" />    <line x1="114" y1="114" x2="130" y2="114" />    <line x1="146" y1="114" x2="178" y2="114" />    <line x1="210" y1="114" x2="242" y2="114" />    <line x1="290" y1="114" x2="322" y2="114" />    <line x1="370" y1="114" x2="402" y2="114" />    <line x1="466" y1="114" x2="482" y2="114" />    <line x1="34" y1="130" x2="50" y2="130" />    <line x1="66" y1="130" x2="82" y2="130" />    <line x1="98" y1="130" x2="114" y2="130" />    <line x1="130" y1="130" x2="146" y2="130" />    <line x1="178" y1="130" x2="194" y2="130" />    <line x1="210" y1="130" x2="226" y2="130" />    <line x1="274" y1="130" x2="306" y2="130" />    <line x1="338" y1="130" x2="354" y2="130" />    <line x1="402" y1="130" x2="434" y2="130" />    <line x1="18" y1="146" x2="34" y2="146" />    <line x1="82" y1="146" x2="98" y2="146" />    <line x1="114" y1="146" x2="130" y2="146" />    <line x1="146" y1="146" x2="178" y2="146" />    <line x1="194" y1="146" x2="210" y2="146" />    <line x1="242" y1="146" x2="290" y2="146" />    <line x1="306" y1="146" x2="338" y2="146" />    <line x1="354" y1="146" x2="386" y2="146" />    <line x1="34" y1="162" x2="50" y2="162" />    <line x1="66" y1="162" x2="130" y2="162" />    <line x1="178" y1="162" x2="306" y2="162" />    <line x1="338" y1="162" x2="354" y2="162" />    <line x1="402" y1="162" x2="418" y2="162" />    <line x1="434" y1="162" x2="450" y2="162" />    <line x1="50" y1="178" x2="66" y2="178" />    <line x1="114" y1="178" x2="146" y2="178" />    <line x1="210" y1="178" x2="242" y2="178" />    <line x1="258" y1="178" x2="274" y2="178" />    <line x1="306" y1="178" x2="354" y2="178" />    <line x1="418" y1="178" x2="434" y2="178" />    <line x1="450" y1="178" x2="466" y2="178" />    <line x1="18" y1="194" x2="34" y2="194" />    <line x1="66" y1="194" x2="82" y2="194" />    <line x1="98" y1="194" x2="114" y2="194" />    <line x1="162" y1="194" x2="178" y2="194" />    <line x1="194" y1="194" x2="258" y2="194" />    <line x1="290" y1="194" x2="402" y2="194" />    <line x1="434" y1="194" x2="450" y2="194" />    <line x1="34" y1="210" x2="66" y2="210" />    <line x1="82" y1="210" x2="98" y2="210" />    <line x1="146" y1="210" x2="162" y2="210" />    <line x1="274" y1="210" x2="290" y2="210" />    <line x1="306" y1="210" x2="354" y2="210" />    <line x1="370" y1="210" x2="418" y2="210" />    <line x1="18" y1="226" x2="98" y2="226" />    <line x1="130" y1="226" x2="146" y2="226" />    <line x1="178" y1="226" x2="194" y2="226" />    <line x1="226" y1="226" x2="242" y2="226" />    <line x1="258" y1="226" x2="274" y2="226" />    <line x1="290" y1="226" x2="370" y2="226" />    <line x1="418" y1="226" x2="434" y2="226" />    <line x1="450" y1="226" x2="466" y2="226" />    <line x1="2" y1="242" x2="18" y2="242" />    <line x1="130" y1="242" x2="146" y2="242" />    <line x1="242" y1="242" x2="290" y2="242" />    <line x1="322" y1="242" x2="338" y2="242" />    <line x1="354" y1="242" x2="386" y2="242" />    <line x1="402" y1="242" x2="418" y2="242" />    <line x1="434" y1="242" x2="450" y2="242" />    <line x1="466" y1="242" x2="482" y2="242" />    <line x1="18" y1="258" x2="66" y2="258" />    <line x1="114" y1="258" x2="130" y2="258" />    <line x1="162" y1="258" x2="210" y2="258" />    <line x1="226" y1="258" x2="258" y2="258" />    <line x1="290" y1="258" x2="322" y2="258" />    <line x1="338" y1="258" x2="354" y2="258" />    <line x1="386" y1="258" x2="402" y2="258" />    <line x1="418" y1="258" x2="434" y2="258" />    <line x1="450" y1="258" x2="466" y2="258" />    <line x1="34" y1="274" x2="66" y2="274" />    <line x1="98" y1="274" x2="114" y2="274" />    <line x1="146" y1="274" x2="226" y2="274" />    <line x1="242" y1="274" x2="306" y2="274" />    <line x1="370" y1="274" x2="386" y2="274" />    <line x1="418" y1="274" x2="450" y2="274" />    <line x1="466" y1="274" x2="482" y2="274" />    <line x1="18" y1="290" x2="34" y2="290" />    <line x1="66" y1="290" x2="98" y2="290" />    <line x1="114" y1="290" x2="242" y2="290" />    <line x1="258" y1="290" x2="290" y2="290" />    <line x1="338" y1="290" x2="370" y2="290" />    <line x1="402" y1="290" x2="418" y2="290" />    <line x1="2" y1="306" x2="18" y2="306" />    <line x1="82" y1="306" x2="146" y2="306" />    <line x1="178" y1="306" x2="194" y2="306" />    <line x1="226" y1="306" x2="274" y2="306" />    <line x1="290" y1="306" x2="354" y2="306" />    <line x1="386" y1="306" x2="402" y2="306" />    <line x1="418" y1="306" x2="450" y2="306" />    <line x1="2" y1="322" x2="18" y2="322" />    <line x1="50" y1="322" x2="114" y2="322" />    <line x1="178" y1="322" x2="226" y2="322" />    <line x1="242" y1="322" x2="258" y2="322" />    <line x1="274" y1="322" x2="338" y2="322" />    <line x1="370" y1="322" x2="386" y2="322" />    <line x1="402" y1="322" x2="418" y2="322" />    <line x1="450" y1="322" x2="482" y2="322" />    <line x1="18" y1="338" x2="66" y2="338" />    <line x1="82" y1="338" x2="98" y2="338" />    <line x1="114" y1="338" x2="130" y2="338" />    <line x1="162" y1="338" x2="210" y2="338" />    <line x1="226" y1="338" x2="242" y2="338" />    <line x1="258" y1="338" x2="274" y2="338" />    <line x1="338" y1="338" x2="370" y2="338" />    <line x1="386" y1="338" x2="466" y2="338" />    <line x1="18" y1="354" x2="34" y2="354" />    <line x1="98" y1="354" x2="114" y2="354" />    <line x1="162" y1="354" x2="194" y2="354" />    <line x1="210" y1="354" x2="226" y2="354" />    <line x1="242" y1="354" x2="274" y2="354" />    <line x1="322" y1="354" x2="338" y2="354" />    <line x1="370" y1="354" x2="386" y2="354" />    <line x1="434" y1="354" x2="450" y2="354" />    <line x1="466" y1="354" x2="482" y2="354" />    <line x1="18" y1="370" x2="66" y2="370" />    <line x1="82" y1="370" x2="98" y2="370" />    <line x1="178" y1="370" x2="226" y2="370" />    <line x1="258" y1="370" x2="322" y2="370" />    <line x1="338" y1="370" x2="402" y2="370" />    <line x1="418" y1="370" x2="466" y2="370" />    <line x1="34" y1="386" x2="50" y2="386" />    <line x1="66" y1="386" x2="82" y2="386" />    <line x1="98" y1="386" x2="130" y2="386" />    <line x1="162" y1="386" x2="178" y2="386" />    <line x1="242" y1="386" x2="258" y2="386" />    <line x1="306" y1="386" x2="338" y2="386" />    <line x1="354" y1="386" x2="386" y2="386" />    <line x1="466" y1="386" x2="482" y2="386" />    <line x1="82" y1="402" x2="98" y2="402" />    <line x1="114" y1="402" x2="146" y2="402" />    <line x1="178" y1="402" x2="242" y2="402" />    <line x1="418" y1="402" x2="466" y2="402" />    <line x1="2" y1="418" x2="18" y2="418" />    <line x1="50" y1="418" x2="114" y2="418" />    <line x1="146" y1="418" x2="258" y2="418" />    <line x1="274" y1="418" x2="306" y2="418" />    <line x1="322" y1="418" x2="418" y2="418" />    <line x1="18" y1="434" x2="50" y2="434" />    <line x1="114" y1="434" x2="146" y2="434" />    <line x1="178" y1="434" x2="210" y2="434" />    <line x1="226" y1="434" x2="274" y2="434" />    <line x1="306" y1="434" x2="338" y2="434" />    <line x1="386" y1="434" x2="418" y2="434" />    <line x1="34" y1="450" x2="50" y2="450" />    <line x1="82" y1="450" x2="114" y2="450" />    <line x1="146" y1="450" x2="178" y2="450" />    <line x1="226" y1="450" x2="258" y2="450" />    <line x1="290" y1="450" x2="322" y2="450" />    <line x1="338" y1="450" x2="370" y2="450" />    <line x1="418" y1="450" x2="482" y2="450" />    <line x1="18" y1="466" x2="82" y2="466" />    <line x1="146" y1="466" x2="162" y2="466" />    <line x1="210" y1="466" x2="226" y2="466" />    <line x1="322" y1="466" x2="338" y2="466" />    <line x1="402" y1="466" x2="418" y2="466" />    <line x1="434" y1="466" x2="450" y2="466" />    <line x1="2" y1="482" x2="242" y2="482" />    <line x1="258" y1="482" x2="482" y2="482" />    <line x1="2" y1="2" x2="2" y2="482" />    <line x1="18" y1="18" x2="18" y2="34" />    <line x1="18" y1="66" x2="18" y2="130" />    <line x1="18" y1="146" x2="18" y2="178" />    <line x1="18" y1="210" x2="18" y2="242" />    <line x1="18" y1="258" x2="18" y2="290" />    <line x1="18" y1="370" x2="18" y2="418" />    <line x1="18" y1="434" x2="18" y2="466" />    <line x1="34" y1="2" x2="34" y2="18" />    <line x1="34" y1="34" x2="34" y2="82" />    <line x1="34" y1="98" x2="34" y2="146" />    <line x1="34" y1="162" x2="34" y2="210" />    <line x1="34" y1="242" x2="34" y2="258" />    <line x1="34" y1="290" x2="34" y2="338" />    <line x1="34" y1="354" x2="34" y2="370" />    <line x1="34" y1="386" x2="34" y2="434" />    <line x1="50" y1="50" x2="50" y2="114" />    <line x1="50" y1="146" x2="50" y2="194" />    <line x1="50" y1="226" x2="50" y2="242" />    <line x1="50" y1="274" x2="50" y2="322" />    <line x1="50" y1="338" x2="50" y2="354" />    <line x1="50" y1="402" x2="50" y2="418" />    <line x1="50" y1="434" x2="50" y2="450" />    <line x1="66" y1="82" x2="66" y2="98" />    <line x1="66" y1="114" x2="66" y2="162" />    <line x1="66" y1="194" x2="66" y2="210" />    <line x1="66" y1="242" x2="66" y2="258" />    <line x1="66" y1="274" x2="66" y2="306" />    <line x1="66" y1="338" x2="66" y2="402" />    <line x1="66" y1="418" x2="66" y2="466" />    <line x1="82" y1="18" x2="82" y2="34" />    <line x1="82" y1="50" x2="82" y2="66" />    <line x1="82" y1="98" x2="82" y2="130" />    <line x1="82" y1="162" x2="82" y2="210" />    <line x1="82" y1="226" x2="82" y2="274" />    <line x1="82" y1="322" x2="82" y2="354" />    <line x1="82" y1="402" x2="82" y2="418" />    <line x1="82" y1="434" x2="82" y2="450" />    <line x1="98" y1="66" x2="98" y2="114" />    <line x1="98" y1="130" x2="98" y2="162" />    <line x1="98" y1="178" x2="98" y2="194" />    <line x1="98" y1="210" x2="98" y2="226" />    <line x1="98" y1="242" x2="98" y2="290" />    <line x1="98" y1="354" x2="98" y2="370" />    <line x1="98" y1="386" x2="98" y2="402" />    <line x1="98" y1="418" x2="98" y2="466" />    <line x1="114" y1="2" x2="114" y2="18" />    <line x1="114" y1="162" x2="114" y2="178" />    <line x1="114" y1="194" x2="114" y2="258" />    <line x1="114" y1="290" x2="114" y2="322" />    <line x1="114" y1="338" x2="114" y2="354" />    <line x1="114" y1="370" x2="114" y2="386" />    <line x1="114" y1="402" x2="114" y2="418" />    <line x1="114" y1="450" x2="114" y2="466" />    <line x1="130" y1="98" x2="130" y2="146" />    <line x1="130" y1="178" x2="130" y2="242" />    <line x1="130" y1="258" x2="130" y2="290" />    <line x1="130" y1="322" x2="130" y2="386" />    <line x1="130" y1="418" x2="130" y2="482" />    <line x1="146" y1="18" x2="146" y2="98" />    <line x1="146" y1="146" x2="146" y2="178" />    <line x1="146" y1="194" x2="146" y2="210" />    <line x1="146" y1="242" x2="146" y2="274" />    <line x1="146" y1="306" x2="146" y2="418" />    <line x1="162" y1="18" x2="162" y2="34" />    <line x1="162" y1="50" x2="162" y2="66" />    <line x1="162" y1="98" x2="162" y2="258" />    <line x1="162" y1="290" x2="162" y2="338" />    <line x1="162" y1="354" x2="162" y2="386" />    <line x1="162" y1="402" x2="162" y2="466" />    <line x1="178" y1="2" x2="178" y2="18" />    <line x1="178" y1="34" x2="178" y2="50" />    <line x1="178" y1="66" x2="178" y2="82" />    <line x1="178" y1="162" x2="178" y2="178" />    <line x1="178" y1="210" x2="178" y2="242" />    <line x1="178" y1="306" x2="178" y2="322" />    <line x1="178" y1="386" x2="178" y2="402" />    <line x1="178" y1="434" x2="178" y2="450" />    <line x1="178" y1="466" x2="178" y2="482" />    <line x1="194" y1="50" x2="194" y2="146" />    <line x1="194" y1="178" x2="194" y2="226" />    <line x1="194" y1="242" x2="194" y2="258" />    <line x1="194" y1="370" x2="194" y2="386" />    <line x1="194" y1="450" x2="194" y2="482" />    <line x1="210" y1="34" x2="210" y2="50" />    <line x1="210" y1="98" x2="210" y2="130" />    <line x1="210" y1="210" x2="210" y2="258" />    <line x1="210" y1="290" x2="210" y2="322" />    <line x1="210" y1="338" x2="210" y2="370" />    <line x1="210" y1="386" x2="210" y2="402" />    <line x1="210" y1="434" x2="210" y2="466" />    <line x1="226" y1="2" x2="226" y2="34" />    <line x1="226" y1="66" x2="226" y2="82" />    <line x1="226" y1="130" x2="226" y2="162" />    <line x1="226" y1="194" x2="226" y2="274" />    <line x1="226" y1="322" x2="226" y2="338" />    <line x1="226" y1="370" x2="226" y2="402" />    <line x1="226" y1="418" x2="226" y2="434" />    <line x1="226" y1="450" x2="226" y2="466" />    <line x1="242" y1="66" x2="242" y2="98" />    <line x1="242" y1="130" x2="242" y2="146" />    <line x1="242" y1="162" x2="242" y2="178" />    <line x1="242" y1="194" x2="242" y2="210" />    <line x1="242" y1="274" x2="242" y2="290" />    <line x1="242" y1="306" x2="242" y2="322" />    <line x1="242" y1="354" x2="242" y2="386" />    <line x1="242" y1="466" x2="242" y2="482" />    <line x1="258" y1="18" x2="258" y2="146" />    <line x1="258" y1="178" x2="258" y2="194" />    <line x1="258" y1="210" x2="258" y2="226" />    <line x1="258" y1="242" x2="258" y2="258" />    <line x1="258" y1="338" x2="258" y2="354" />    <line x1="258" y1="370" x2="258" y2="418" />    <line x1="258" y1="450" x2="258" y2="482" />    <line x1="274" y1="98" x2="274" y2="130" />    <line x1="274" y1="178" x2="274" y2="194" />    <line x1="274" y1="226" x2="274" y2="242" />    <line x1="274" y1="258" x2="274" y2="274" />    <line x1="274" y1="306" x2="274" y2="338" />    <line x1="274" y1="386" x2="274" y2="418" />    <line x1="274" y1="434" x2="274" y2="466" />    <line x1="290" y1="2" x2="290" y2="50" />    <line x1="290" y1="82" x2="290" y2="114" />    <line x1="290" y1="130" x2="290" y2="146" />    <line x1="290" y1="162" x2="290" y2="226" />    <line x1="290" y1="242" x2="290" y2="258" />    <line x1="290" y1="290" x2="290" y2="306" />    <line x1="290" y1="338" x2="290" y2="402" />    <line x1="290" y1="418" x2="290" y2="466" />    <line x1="306" y1="18" x2="306" y2="98" />    <line x1="306" y1="146" x2="306" y2="162" />    <line x1="306" y1="226" x2="306" y2="242" />    <line x1="306" y1="274" x2="306" y2="306" />    <line x1="306" y1="322" x2="306" y2="354" />    <line x1="306" y1="386" x2="306" y2="418" />    <line x1="306" y1="466" x2="306" y2="482" />    <line x1="322" y1="2" x2="322" y2="50" />    <line x1="322" y1="82" x2="322" y2="146" />    <line x1="322" y1="162" x2="322" y2="178" />    <line x1="322" y1="242" x2="322" y2="290" />    <line x1="322" y1="338" x2="322" y2="370" />    <line x1="322" y1="402" x2="322" y2="418" />    <line x1="322" y1="450" x2="322" y2="466" />    <line x1="338" y1="18" x2="338" y2="50" />    <line x1="338" y1="82" x2="338" y2="114" />    <line x1="338" y1="258" x2="338" y2="290" />    <line x1="338" y1="322" x2="338" y2="338" />    <line x1="338" y1="370" x2="338" y2="402" />    <line x1="338" y1="434" x2="338" y2="450" />    <line x1="354" y1="2" x2="354" y2="34" />    <line x1="354" y1="50" x2="354" y2="66" />    <line x1="354" y1="98" x2="354" y2="178" />    <line x1="354" y1="210" x2="354" y2="226" />    <line x1="354" y1="242" x2="354" y2="274" />    <line x1="354" y1="306" x2="354" y2="322" />    <line x1="354" y1="338" x2="354" y2="370" />    <line x1="354" y1="386" x2="354" y2="434" />    <line x1="354" y1="450" x2="354" y2="482" />    <line x1="370" y1="34" x2="370" y2="50" />    <line x1="370" y1="66" x2="370" y2="82" />    <line x1="370" y1="114" x2="370" y2="130" />    <line x1="370" y1="162" x2="370" y2="210" />    <line x1="370" y1="242" x2="370" y2="274" />    <line x1="370" y1="290" x2="370" y2="338" />    <line x1="370" y1="402" x2="370" y2="418" />    <line x1="370" y1="434" x2="370" y2="466" />    <line x1="386" y1="98" x2="386" y2="114" />    <line x1="386" y1="130" x2="386" y2="178" />    <line x1="386" y1="210" x2="386" y2="226" />    <line x1="386" y1="274" x2="386" y2="290" />    <line x1="386" y1="322" x2="386" y2="354" />    <line x1="386" y1="386" x2="386" y2="402" />    <line x1="386" y1="450" x2="386" y2="482" />    <line x1="402" y1="34" x2="402" y2="66" />    <line x1="402" y1="82" x2="402" y2="98" />    <line x1="402" y1="114" x2="402" y2="146" />    <line x1="402" y1="162" x2="402" y2="194" />    <line x1="402" y1="226" x2="402" y2="322" />    <line x1="402" y1="354" x2="402" y2="418" />    <line x1="402" y1="434" x2="402" y2="450" />    <line x1="418" y1="18" x2="418" y2="50" />    <line x1="418" y1="82" x2="418" y2="114" />    <line x1="418" y1="146" x2="418" y2="162" />    <line x1="418" y1="178" x2="418" y2="242" />    <line x1="418" y1="258" x2="418" y2="290" />    <line x1="418" y1="338" x2="418" y2="402" />    <line x1="418" y1="434" x2="418" y2="466" />    <line x1="434" y1="34" x2="434" y2="50" />    <line x1="434" y1="98" x2="434" y2="194" />    <line x1="434" y1="210" x2="434" y2="226" />    <line x1="434" y1="242" x2="434" y2="258" />    <line x1="434" y1="290" x2="434" y2="306" />    <line x1="434" y1="322" x2="434" y2="338" />    <line x1="434" y1="370" x2="434" y2="386" />    <line x1="434" y1="402" x2="434" y2="434" />    <line x1="434" y1="466" x2="434" y2="482" />    <line x1="450" y1="18" x2="450" y2="82" />    <line x1="450" y1="98" x2="450" y2="146" />    <line x1="450" y1="194" x2="450" y2="210" />    <line x1="450" y1="226" x2="450" y2="242" />    <line x1="450" y1="258" x2="450" y2="322" />    <line x1="450" y1="338" x2="450" y2="354" />    <line x1="450" y1="386" x2="450" y2="402" />    <line x1="450" y1="418" x2="450" y2="450" />    <line x1="466" y1="2" x2="466" y2="18" />    <line x1="466" y1="50" x2="466" y2="66" />    <line x1="466" y1="82" x2="466" y2="114" />    <line x1="466" y1="130" x2="466" y2="226" />    <line x1="466" y1="274" x2="466" y2="306" />    <line x1="466" y1="402" x2="466" y2="434" />    <line x1="466" y1="450" x2="466" y2="466" />    <line x1="482" y1="2" x2="482" y2="482" />  </g></svg>');
+        }
+        
+        paper.moveTo(arr[0][0]*SCALE,arr[0][1]*SCALE);
+
+        function drawing_line(color, x_start, y_start, x_end, y_end, board){
+            board.beginPath();
+            board.strokeStyle = color;
+            board.lineWidth = 4*SCALE;
+            board.moveTo(x_start,y_start);
+            board.lineTo(x_end,y_end);
+            board.stroke(); 
+            board.closePath();
+        }
+
+        function drawAction(whenPressKey){
+            var colorLine = YELLOW;
+            var dotMove = 4*SCALE;
+            if(intervalId == undefined){
+                switch(whenPressKey.keyCode){
+                case key.UP:
+                    if(checkCollision(x,y-dotMove)==false){
+                        drawing_line(colorLine, x, y, x, y - dotMove, paper);
+                        y = y - dotMove;
+                        checkWin(x,y);
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'     
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                break;
+
+                case key.DOWN:
+                    console.log(x,y);
+                    if(checkCollision(x,y+dotMove)==false){
+                        drawing_line(colorLine, x, y, x, y + dotMove, paper);
+                        y = y + dotMove;
+                        checkWin(x,y);
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'     
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                break;
+
+                case key.LEFT:
+                    if(checkCollision(x-dotMove,y)==false){
+                        drawing_line(colorLine, x, y, x - dotMove, y, paper);
+                        x = x - dotMove;
+                        checkWin(x,y);
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'      
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                break;
+
+                case key.RIGHT:
+                    if(checkCollision(x+dotMove,y)==false){
+                        drawing_line(colorLine, x, y, x + dotMove, y, paper);
+                        x = x + dotMove;
+                    }else if(willColide = true){
+                        Swal.fire({
+                            title: 'You died!',
+                            text: 'Next time don\'t touch lightsabers.',
+                            iconHtml: '<img src="../../images/rip-img.png">',
+                            confirmButtonText: 'Try again'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        })
+                    }
+                    break;
+                }
+            }
+        }
+        
+        function checkWin(x,y){
+            if(x >= 325.8399999999999 && x <= 336.39999999999986 && y == 631.6799999999998){
+                location.replace('../../html/end.html');
+            }
+        }
+        
+        function checkCollision(x,y){
+            var willColide = false;
+            function rgbToHex(r, g, b) {
+                if (r > 255 || g > 255 || b > 255)
+                throw "Invalid color component";
+                return ((r << 16) | (g << 8) | b).toString(16);
+            }
+            var p = paper.getImageData(x, y, 1, 1).data;
+            var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+            if(hex===PINK){
+                willColide = true;
+            }
+            else if(hex===YELLOW){
+                willColide = true;
+            }
+            return willColide;
+        }
+
+        function drawSolution(){
+            document.getElementById("hint-btn").disabled = true;
+            paper.moveTo(arr[0][0]*SCALE,arr[0][1]*SCALE);
+            intervalId = setInterval(draw, 50);
+            paper.clearRect(0,0,622*SCALE,622*SCALE);
+            drawMaze();
+            function draw(){
+                paper.strokeStyle = "#00FF00";
+                if(i==arr.length){
+                    clearInterval(intervalId);
+                    intervalId = undefined;
+                }
+                else{
+                    var a = arr[i][0]*SCALE;
+                    var b = arr[i][1]*SCALE;
+                    i++; 
+                    paper.lineTo(a,b);
+                    paper.stroke();
+                }
+            }
+            setTimeout(function () { 
+                location.reload();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+body{
+    background: url(../images/main-background.jpg) no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+}
+
+h1{
+    font-size: 100px;
+    text-align: center;
+    color: white;
+    text-shadow:
+    0 0 7px #fff,
+    0 0 10px #fff,
+    0 0 21px #fff,
+    0 0 42px #af26ff,
+    0 0 82px #af26ff,   
+    0 0 92px #af26ff,
+    0 0 102px #af26ff,
+    0 0 151px #af26ff;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.content-container{
+    display: flex;
+    flex-wrap: wrap;
+    width: 800px;
+    height: 600px;
+    background: rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 8px 8px rgba(0, 0, 0, 0.5);
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.content-table {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.content-table h2{
+    font-size: 50px;
+    text-align: center;
+    color: white;
+    text-shadow:
+    0 0 7px #fff,
+    0 0 10px #fff,
+    0 0 21px #fff,
+    0 0 42px #af26ff,
+    0 0 82px #af26ff,   
+    0 0 92px #af26ff,
+    0 0 102px #af26ff,
+    0 0 151px #af26ff;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#bck-to-main-menu-btn{
+    width: 200px;   
+    height: 50px;
+    margin-top: 20px;
+    background: white;
+    border: 2px solid white;
+    border-radius: 20px;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+#bck-to-main-menu-btn:hover{
+    background: lightgray;
+    cursor: pointer;
+}
