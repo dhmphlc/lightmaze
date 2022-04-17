@@ -28,14 +28,7 @@
     </div>
     
     <script>
-        window.onload = function(){
-            Swal.fire({
-                title: 'Welcome to LightMaze!',
-                html: 'To move around use ARROW KEYS. <br> If you touch walls or yourself you will lose. <br> Good luck player!',
-                confirmButtonText: 'Let\'s GO!'     
-            })
-        }
-
+        
         window.addEventListener("keydown", function(e) {
             if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
                 e.preventDefault();

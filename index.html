@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/mainmenu.css">
     <meta name="google" content="notranslate">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>LightMaze - Main Menu</title>
 </head>
 <body>
@@ -25,6 +26,11 @@
                 </tr>
                 <tr>
                     <td>
+                        <button id="howtoplay-btn">HOW TO PLAY</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <button id="credits-btn">CREDITS</button>
                     </td>
                 </tr>
@@ -33,13 +39,20 @@
     </div>
 
     <script type="text/javascript">
+
         document.getElementById("play-btn").onclick = function () {
             location.href = "levels/level-1/level-1.html";
         };
         document.getElementById("level-btn").onclick = function () {
             location.href = "html/level-selector.html";
         };
-
+        document.getElementById("howtoplay-btn").onclick = function () {
+            Swal.fire({
+                title: 'Welcome to LightMaze!',
+                html: 'To move around use ARROW KEYS. <br> If you touch walls or yourself you will lose. <br> Good luck player!',
+                confirmButtonText: 'Let\'s GO!'     
+            })
+        };
         document.getElementById("credits-btn").onclick = function () {
             location.href = "html/credits.html";
         };
